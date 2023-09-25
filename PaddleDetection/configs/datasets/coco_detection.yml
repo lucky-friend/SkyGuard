@@ -1,0 +1,21 @@
+metric: COCO
+num_classes: 1
+
+TrainDataset:
+  name: COCODataSet
+  image_dir: image
+  anno_path: annotation/voc_train.json
+  dataset_dir: data2
+  data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd']
+
+EvalDataset:
+  name: COCODataSet
+  image_dir: image
+  anno_path: annotation/voc_val.json
+  dataset_dir: data2
+  allow_empty: true
+
+TestDataset:
+  name: ImageFolder
+  anno_path: annotation/voc_test.json # also support txt (like VOC's label_list.txt)
+  dataset_dir: data2 # if set, anno_path will be 'dataset_dir/anno_path'

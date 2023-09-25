@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>飞行器检测与跟踪系统</title>
+    <link rel="stylesheet" href="/statics/css/wodry.css">
+    <link rel="stylesheet" href="/statics/css/index.css">
+    <link rel="stylesheet" href="/statics/css/public.css">
+    <script src="/statics/js/jquery.min.js"></script>
+    <script src="/statics/js/jquery-3.3.1.min.js"></script>
+    <script>
+        $(function () {
+            $('.myscroll').myScroll({
+                speed: 60, //数值越大，速度越慢
+                rowHeight: 38 //li的高度
+            });
+        });
+
+        $(document).ready(function () {
+            var whei = $(window).width()
+            $("html").css({ fontSize: whei / 22 });
+            $(window).resize(function () {
+                var whei = $(window).width();
+                $("html").css({ fontSize: whei / 22 })
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="main">
+        <div class="header">
+            <div class="header-left fl" id="time"></div>
+            <div class="header-center fl">
+                <div class="header-title">
+                    飞行器检测与跟踪系统
+                </div>
+                <div class="header-img"></div>
+            </div>
+            <div class="header-right fl"></div>
+            <div class="header-bottom fl"></div>
+
+        </div>
+
+        <div class="center">
+            <div class="center-left fl">
+                <div class="left-top rightTop border">
+                    <ul class="depart_number_cage">
+                        <li class="depart_name"
+                            style="height: 90%;width: 50%;text-align: center;display: inline-block;font-size:22px;">
+                            大型飞行器：</li>
+                        <li class="depart_number" id="count1" style="font-size: 22px;">0</li>
+                    </ul>
+                    <ul class="depart_number_cage">
+                        <li class="depart_name"
+                            style="height: 90%;width: 50%;text-align: center;display: inline-block;font-size:22px;">
+                            中型飞行器：</li>
+                        <li class="depart_number" id="count2" style="font-size: 22px;">0</li>
+                    </ul>
+                    <ul class="depart_number_cage" style="margin-bottom: 0px;">
+                        <li class="depart_name"
+                            style="height: 90%;width: 50%;text-align: center;display: inline-block;font-size:22px;">
+                            小型飞行器：</li>
+                        <li class="depart_number" id="count3" style="font-size: 22px;">0</li>
+                    </ul>
+
+                </div>
+                <div class="left-cen rightTop border">
+                    <img id="origin_show" src="/statics/images/img6.png" style="width: 100%;height: 100%;" />
+
+                </div>
+                <div class="left-bottom rightTop border">
+                    <img class="video_around" src="/statics/images/img2.png"
+                        onclick="runPythonCommand('python PaddleDetection/deploy/python/infer.py --model_dir=output_inference/infer1/ --video_file=test3.mp4 --thresh=0.35 --output_dir=detection_result/ --device=GPU','1')" />
+                    <img class="video_around" src="/statics/images/img3.png" 
+                        onclick="runPythonCommand('python PaddleDetection/deploy/python/infer.py --model_dir=output_inference/infer1/ --video_file=test2.mp4 --thresh=0.35 --output_dir=detection_result/ --device=GPU','2')"/>
+                    <img class="video_around" src="/statics/images/img4.png " 
+                        onclick="runPythonCommand('python PaddleDetection/deploy/python/infer.py --model_dir=output_inference/infer1/ --video_file=test4.mp4 --thresh=0.35 --output_dir=detection_result/ --device=GPU','3')"/>
+                    <img class="video_around" src="/statics/images/img5.png "
+                        onclick="runPythonCommand('python PaddleDetection/deploy/python/infer.py --model_dir=output_inference/infer1/ --video_file=test1.mp4 --thresh=0.35 --output_dir=detection_result/ --device=GPU','4')" />
+
+                </div>
+            </div>
+            <div class="center-cen fl">
+                <div class="cen-top rightTop border">
+                    <div class="top-bottom">
+                        <img class="allnav" style="height:100%;width: 100%;" src="/statics/images/img5.png"
+                            id="jiankong"></img>
+                    </div>
+
+
+                </div>
+                <div class="cen-bottom rightTop border">
+                    <div class="title">飞行器数量统计</div>
+                    <div class="bottom-b">
+                        <div id="myChart" style="width: 95%; height: 230px; margin-top: 2%;" ></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="center-right fr">
+                <div class="right-top rightTop border">
+                    <div class="analysis" id="jiankong_num_total">1号监控飞行器总数量：</div>
+                    <div id="num_count"></div>
+                    <ul class="data_show_box">
+                        <li class="data_cage" id="num_count4">0</li>
+                        <li class="data_cage" id="num_count3">0</li>
+                        <li class="data_cage" id="num_count2">0</li>
+                        <li class="data_cage" id="num_count1">0</li>
+                        <li class="data_cage" id="num_count0">0</li>
+                    </ul>
+
+                </div>
+                <div class="right-cen border">
+                    <div class="message_scroll">
+                        <div class="scroll_top">
+                            <span class="scroll_title">飞行器密度</span>
+                            <span class="scroll_level" id="camera1" style="text-align: center;"></span>
+                        </div>
+                        <div class="msg_cage">
+                            <a class="localize_msg "> 1号监控摄像头</a>
+                        </div>
+                    </div>
+                    <div class="message_scroll">
+                        <div class="scroll_top">
+                            <span class="scroll_title">飞行器密度</span>
+                            <span class="scroll_level" id="camera2" style="text-align: center;"></span>
+                        </div>
+                        <div class="msg_cage">
+                            <a class="localize_msg "> 2号监控摄像头</a>
+                        </div>
+                    </div>
+                    <div class="message_scroll">
+                        <div class="scroll_top">
+                            <span class="scroll_title">飞行器密度</span>
+                            <span class="scroll_level" id="camera3" style="text-align: center;"></span>
+                        </div>
+                        <div class="msg_cage">
+                            <a class="localize_msg "> 3号监控摄像头</a>
+                        </div>
+                    </div>
+                    <div class="message_scroll">
+                        <div class="scroll_top">
+                            <span class="scroll_title">飞行器密度</span>
+                            <span class="scroll_level" id="camera4" style="text-align: center;"></span>
+                        </div>
+                        <div class="msg_cage">
+                            <a class="localize_msg "> 4号监控摄像头</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="right-bottom rightTop border">
+                    <div id="graph1" style="width:90%;height:210px;margin-top:8%;"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <script src="https://www.jq22.com/jquery/echarts-4.2.1.min.js"></script>
+    <script src="/statics/js/wodry.min.js"></script>
+    <script src="/statics/js/fontscroll.js"></script>
+    <script src="/statics/js/echarts.js"></script>
+    <script src="/statics/js/china.js"></script>
+    <script src="/statics/js/jquery-3.3.1.min.js"></script>
+    <!--<script src="js/mymap.js"></script>-->
+    <script>
+        var counter = 3000;
+
+
+        //顶部时间
+        function getTime() {
+            var myDate = new Date();
+            var myYear = myDate.getFullYear(); //获取完整的年份(4位,1970-????)
+            var myMonth = myDate.getMonth() + 1; //获取当前月份(0-11,0代表1月)
+            var myToday = myDate.getDate(); //获取当前日(1-31)
+            var myDay = myDate.getDay(); //获取当前星期X(0-6,0代表星期天)
+            var myHour = myDate.getHours(); //获取当前小时数(0-23)
+            var myMinute = myDate.getMinutes(); //获取当前分钟数(0-59)
+            var mySecond = myDate.getSeconds(); //获取当前秒数(0-59)
+            var week = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            var nowTime;
+
+            nowTime = myYear + '-' + fillZero(myMonth) + '-' + fillZero(myToday) + '&nbsp;&nbsp;' + fillZero(myHour) + ':' + fillZero(myMinute) + ':' + fillZero(mySecond) + '&nbsp;&nbsp;' + week[myDay] + '&nbsp;&nbsp;';
+            //console.log(nowTime);
+            $('#time').html(nowTime);
+        };
+        function fillZero(str) {
+            var realNum;
+            if (str < 10) {
+                realNum = '0' + str;
+            } else {
+                realNum = str;
+            }
+            return realNum;
+        }
+        setInterval(getTime, 1000);
+
+    </script>
+
+    <script>
+        window.onload = function () {
+            myChart = echarts.init(document.getElementById('myChart'));
+            graph1 = echarts.init(document.getElementById('graph1'));
+            // 定义数据
+            data = {
+                labels: ['11秒前', '10秒前', '9秒前', '8秒前', '7秒前', '6秒前', '5秒前', '4秒前', '3秒前', '2秒前', '1秒前', '当前'],
+                values: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 60]
+            };
+
+            data_list2 = [
+                { value: 10, name: '大型飞行器', itemStyle: { color: 'yellow' } },
+                { value: 20, name: '中型飞行器', itemStyle: { color: '#5A99B6' } },
+                { value: 30, name: '小型飞行器', itemStyle: { color: '#C0C6E7' } },
+                { value: 0, name: '无飞行器', itemStyle: { color: 'orange' } }
+            ]
+            var option = {
+                title: {
+                    text: '（数量/时间）',
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: '100%',
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: data.labels,
+                    axisLabel: {
+                        color: '#fff'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    },
+                    axisTick: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        color: '#fff'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    },
+                    axisTick: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    }
+                },
+
+            };
+            // 绘制图表
+            myChart.setOption(option);
+            var graph = {
+                title: {
+                    text: '飞行器类型',
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: '100%',
+                        fontWeight: 'normal',
+                        height:'100%',
+                    }
+                },
+                tooltip: {},
+                series: [{
+                    type: 'pie',
+                    data: data_list2
+                }]
+            };
+
+            graph1.setOption(graph);
+            setInterval(function () {
+
+                // 在这里获取新的数据并更新data_list
+                myChart.setOption({
+                    series: [{
+                        data: data.values,
+                        type: 'line',
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 10,
+                        lineStyle: {
+                            color: '#0078d7',
+                            width: 3
+                        },
+                        itemStyle: {
+                            color: '#0078d7',
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }
+                    }]
+                });
+                graph1.setOption({
+                    series: [{
+                        type: 'pie',
+                        data: data_list2
+
+                    }]
+                });
+            }, 500);
+
+
+        }
+        // 初始化 ECharts 实例
+
+    </script>
+    <script>
+        let wss_url = "ws://127.0.0.1:8168/";
+        let ws = new WebSocket(wss_url);
+        ws.onopen = function (evt) {
+            console.log(">>> ws.onopen.");
+            //ws.send("Test");
+        };
+        ws.onmessage = function (evt) {
+            //get PromiseResult from Promise
+            var base64 = evt.data.text().then(
+                res => {
+
+                    var msg_data = JSON.parse(res);
+                    var image_data = msg_data['image_predict'];
+                    var image_data1 = msg_data['image_origin']
+                    $("#jiankong").attr("src", image_data);
+                    $("#origin_show").attr("src", image_data1)
+
+                    var total_count = msg_data['total_count'];
+                    var big_count = msg_data['big_count'];
+                    var mid_count = msg_data['mid_count'];
+                    var small_count = msg_data['small_count'];
+                    var scores = msg_data['score']
+
+                    $('#count1').text(big_count);
+                    $('#count2').text(mid_count);
+                    $('#count3').text(small_count);
+                    var ge = total_count % 10;
+                    // 获取十位数
+                    var shi = Math.floor(total_count / 10) % 10;
+                    $('#num_count0').text(ge);
+                    $('#num_count1').text(shi);
+
+
+                    var element = document.getElementById("jiankong_num_total");
+                    // 获取标签文本内容
+                    var content = element.textContent;
+                    // 提取数字
+                    var num = content.match(/\d+/)[0];
+                    var camera = document.getElementById("camera" + num);
+                    if (scores < 50) {
+                        camera.style.color = "white"
+                        camera.textContent = "低"
+                        camera.classList.add("scroll_level01");
+                    } else if (scores >= 50 && scores < 86) {
+                        camera.style.color = "yellow"
+                        camera.textContent = "中"
+                        camera.classList.add("scroll_level02");
+                    } else {
+                        camera.style.color = "red"
+                        camera.textContent = "高"
+                        camera.classList.add("scroll_level03");
+                    }
+
+
+
+
+                    data.values.push(total_count); // 将获取到的 total_count 添加到 data 中
+                    data.values = data.values.slice(-12);
+
+                    data_list2[0].value = big_count
+                    data_list2[1].value = mid_count
+                    data_list2[2].value = small_count
+                    if (big_count === 0 && mid_count === 0 && small_count === 0) {
+                        data_list2[3].value = 1
+                    } else {
+                        data_list2[3].value = 0
+                    }
+
+                }
+            )
+        };
+        ws.onclose = function (evt) {
+            console.log(">>> ws.onclose.");
+        };
+    </script>
+    <script>
+        function runPythonCommand(argument, num) {
+            var command = argument;
+            $('#jiankong_num_total').text(num + '号监控飞行器总数量：');
+            $.post('/', { command: command }, function (data) {
+                console.log(data.output);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
